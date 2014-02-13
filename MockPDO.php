@@ -1,5 +1,4 @@
 <?php
-
 class MockPDO extends PDO {
 	public function __construct() {
 		
@@ -9,3 +8,4 @@ class MockPDO extends PDO {
 
 	}
 }
+

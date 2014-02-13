@@ -13,7 +13,6 @@ class AccessLogAPI {
 		return 1;
 	}
 	
-
 	function insert($value_array) {
 		$sql = "INSERT INTO api_log(ip, service_name, `datetime`, response_time,response_massage) VALUES (:ip,:service_name,:datetime,:response_time,:response_massage)";
 		$q = $this->db->prepare($sql);
@@ -29,14 +28,19 @@ class AccessLogAPI {
 	    );
 	}
 	
-	function updateById($id, $sql) {
-		$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$stmt = $this->db->prepare("UPDATE ".$table." SET ip=:ip where id=1");		
-		$ip = '158.168.2.7';
-		$stmt->bindParam(':ip', $ip);
-		$dbh->beginTransaction();	
-		$stmt->execute();
-		$dbh->commit();
+	function updateById($id, $keys, $values){
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$update = "";
+			foreach($keys as $key) {
+				if($update!="") $update .= ", ";
+				$update .= $key."=?";
+			}
+			$stmt = $this->db->prepare("UPDATE api_log SET ".$update." where id=?");
+			$params = array_merge($values, array($id));
+
+			$stmt->execute($params);
+
+			return  $stmt->rowCount();
 	}
 
 }
